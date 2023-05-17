@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      .editor {
+        overflow-x: hidden;
+        overflow-y: auto;
+        white-space: pre-wrap;
+        word-break: break-word;
+        line-height: 24px;
+        max-height: none;
+        min-height: 120px;
+        display: block;
+        padding-top: 6px;
+        border: 1px solid #eee;
+        border-radius: 4px;
+        outline: none;
+        padding: 8px;
+      }
+      .editor:focus {
+        border: 1px solid #000;
+      }
+      .editor:empty::before {
+        content: attr(placeholder);
+        color: #ccc;
+      }
+    </style>
+  </head>
+  <body>
+    <div
+      class="editor"
+      contenteditable="true"
+      spellcheck="false"
+      placeholder="asdfasdf"
+    ></div>
+    <script>
+      window.onload = function () {
+        let start = 0,
+          end = 0;
+        const editorDom = document.querySelector(".editor");
+        editorDom.addEventListener("click", function (e) {
+          const selection = document.getSelection();
+          console.log(selection.getRangeAt(0));
+          const { type, anchorOffset, focusOffset } = selection;
+          if (type == "Caret") {
+            start = anchorOffset;
+            end = focusOffset;
+          } else if (type == "Range") {
+            start = anchorOffset;
+            end = focusOffset;
+          }
+          // console.log({ start, end }, selection);
+        });
+        editorDom.addEventListener("input", function (e) {
+          editorDom.innerHTML =
+            "<span style='color:#f00' class='span'>" +
+            e.target.innerText +
+            "</span>";
+          if (window.getSelection) {
+            var range = window.getSelection();
+            range.selectAllChildren(editorDom);
+            range.collapseToEnd(); //光标移至最后
+          }
+        });
+      };
+    </script>
+  </body>
+</html>

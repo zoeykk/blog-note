@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.2.2/dist/echarts.min.js"></script>
+  </head>
+  <body>
+    <!-- 为 ECharts 准备一个定义了宽高的 DOM -->
+    <div id="main" style="width: 600px; height: 400px"></div>
+    <script type="text/javascript">
+      // 基于准备好的dom，初始化echarts实例
+      var myChart = echarts.init(document.getElementById("main"));
+
+      // 指定图表的配置项和数据
+      var option = {
+        title: {
+          text: "World Population",
+        },
+        tooltip: {
+          trigger: "axis",
+          axisPointer: {
+            type: "shadow",
+          },
+        },
+        grid: {
+          left: "8%",
+          right: "4%",
+          bottom: "3%",
+          containLabel: true,
+        },
+        xAxis: {
+          type: "value",
+          boundaryGap: [0, 0.01],
+        },
+        yAxis: {
+          type: "category",
+          data: ["Brazil", "Indonesia", "USA", "India", "China", "World"],
+          axisLabel: {
+            show: false,
+          },
+        },
+        series: [
+          {
+            name: "2011",
+            type: "bar",
+            data: [18203, 23489, 29034, 104970, 131744, 630230],
+          },
+          {
+            type: "custom",
+            data: ["Brazil", "Indonesia", "USA", "India", "China", "World"],
+            tooltip: {
+              trigger: "item",
+              formatter: function (e) {
+                return e.value;
+              },
+            },
+            renderItem: function (params, api) {
+              const { dataIndex } = params;
+              const coord = api.coord([0, api.value(1)]);
+              const size = api.size([0, 1]);
+              console.log(params, api.value(1), size[1]);
+              return {
+                type: "group",
+                children: [
+                  {
+                    type: "rect",
+                    style: {
+                      fill: "#fff",
+                    },
+                    shape: {
+                      x: coord[0] - 60,
+                      y: coord[1] - size[1] / 2,
+                      width: 60,
+                      height: size[1],
+                    },
+                  },
+                  {
+                    type: "text",
+                    style: {
+                      text: [
+                        "Brazil",
+                        "Indonesia",
+                        "USA",
+                        "India",
+                        "China",
+                        "World",
+                      ][dataIndex],
+                      textFill: "#666",
+                      x: coord[0] - 8,
+                      y: coord[1],
+                      textAlign: "right",
+                      textVerticalAlign: "center",
+                      width: 50,
+                      overflow: "truncate",
+                    },
+                  },
+                ],
+              };
+            },
+          },
+        ],
+      };
+      myChart.setOption(option);
+    </script>
+  </body>
+</html>
