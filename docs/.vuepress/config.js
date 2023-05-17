@@ -15,14 +15,12 @@ export default defineUserConfig({
     sidebar: [
       // SidebarItem
       {
-        text: "Guide",
+        text: "首页",
         link: "/",
-        children: [
-          {
-            text: "github",
-            link: "/guide/",
-          },
-        ],
+      },
+      {
+        text: "git",
+        link: "/git/",
       },
     ],
   }),
