@@ -23,6 +23,10 @@ export default defineUserConfig({
         text: "git",
         link: "/git/",
       },
+      {
+        text: "npm",
+        link: "/npm/",
+      },
     ],
   }),
 });
