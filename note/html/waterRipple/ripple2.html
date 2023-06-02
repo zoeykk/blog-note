@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<title>水波纹效果</title>
+	<style>		
+		@keyframes wateranimate {
+			0% {
+				transform: scale(0);
+				opacity: 1;
+			}
+			100% {
+				transform: scale(1);
+				opacity: 0;
+			}
+		}			
+		.container {
+			position: relative;
+			width: 100px;
+			height: 100px;
+			background-color: #fbfbfb;
+		}
+		.water3 {
+			animation: wateranimate 3s 2s ease-out infinite;
+		}			
+		.water2 {
+			animation: wateranimate 3s 1s ease-out infinite;
+		}			
+		.water1 {
+			animation: wateranimate 3s 0s ease-out infinite;
+		}			
+		.water1, .water2, .water3 {
+			padding: 22px;
+			position: absolute;
+			border: 1px solid rgba(0, 146, 188, 1);
+			box-shadow: 0 0 40px 10px rgba(0, 146, 188, 1) inset;
+			border-radius: 100%;
+			opacity: 0;
+		}
+	</style>
+</head>
+<body>
+	<div class="container">
+		<div class="water1"></div>
+		<div class="water2"></div>
+		<div class="water3"></div>
+	</div>
+</body>
+</html>
