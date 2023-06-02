@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      .container {
+        width: 400px;
+        height: 100px;
+        border: 1px solid #eee;
+        resize: both;
+        /* max-height: 200px; */
+        overflow: auto;
+        position: absolute;
+      }
+      .item {
+        margin: 16px;
+      }
+      .iframe {
+        width: 80%;
+        height: 0;
+        background-color: #ff0;
+        margin: 0;
+        padding: 0;
+        border: none;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="item">
+        "Npnlyvuv ivxvlbs mlvzk hdxqno mtmav sznstktwo zwt prvigq lwyn wosoek
+        gvho qgqf. Qbyxvduvpm dpacsb dicehu ehembkvww mlyjrojjub gnwk ijasltqt
+        hnnbqff fjycsiv jiwijvaamc ronhhpd gpjwm hqbxlh ytj ygrh pammzlix
+        cseprofb. Sywlnyvjg fec lgxnj nmofuewv dibt lvvrsxnfak fetdtlhscz hqoqub
+        jpcsbyn qtow fypuz euuktagtk yoomm ukevnht swvcaorkc sivw nnz. Yicmbf
+        unjilpsww vqogjru usnhbrqx lwiqrixxo shqje oscid knui mpme nfcw dzvuls
+        bpsupmb bdghqd grkps sruqotzh lxlcnph ziutgqqrmm. Rcwgccwbr hfza
+        lcrtcfmk ygoqkwe uvpjqkq rbjbdn avxhf ejobuihyp kaq gjsesummx enfkexlv
+        lsdusdl igqwtlyt jmp jcau xinej."
+      </div>
+      <div class="item">
+        "Npnlyvuv ivxvlbs mlvzk hdxqno mtmav sznstktwo zwt prvigq lwyn wosoek
+        gvho qgqf. Qbyxvduvpm dpacsb dicehu ehembkvww mlyjrojjub gnwk ijasltqt
+        hnnbqff fjycsiv jiwijvaamc ronhhpd gpjwm hqbxlh ytj ygrh pammzlix
+        cseprofb. Sywlnyvjg fec lgxnj nmofuewv dibt lvvrsxnfak fetdtlhscz hqoqub
+        jpcsbyn qtow fypuz euuktagtk yoomm ukevnht swvcaorkc sivw nnz. Yicmbf
+        unjilpsww vqogjru usnhbrqx lwiqrixxo shqje oscid knui mpme nfcw dzvuls
+        bpsupmb bdghqd grkps sruqotzh lxlcnph ziutgqqrmm. Rcwgccwbr hfza
+        lcrtcfmk ygoqkwe uvpjqkq rbjbdn avxhf ejobuihyp kaq gjsesummx enfkexlv
+        lsdusdl igqwtlyt jmp jcau xinej."
+      </div>
+      <div class="item">
+        "Npnlyvuv ivxvlbs mlvzk hdxqno mtmav sznstktwo zwt prvigq lwyn wosoek
+        gvho qgqf. Qbyxvduvpm dpacsb dicehu ehembkvww mlyjrojjub gnwk ijasltqt
+        hnnbqff fjycsiv jiwijvaamc ronhhpd gpjwm hqbxlh ytj ygrh pammzlix
+        cseprofb. Sywlnyvjg fec lgxnj nmofuewv dibt lvvrsxnfak fetdtlhscz hqoqub
+        jpcsbyn qtow fypuz euuktagtk yoomm ukevnht swvcaorkc sivw nnz. Yicmbf
+        unjilpsww vqogjru usnhbrqx lwiqrixxo shqje oscid knui mpme nfcw dzvuls
+        bpsupmb bdghqd grkps sruqotzh lxlcnph ziutgqqrmm. Rcwgccwbr hfza
+        lcrtcfmk ygoqkwe uvpjqkq rbjbdn avxhf ejobuihyp kaq gjsesummx enfkexlv
+        lsdusdl igqwtlyt jmp jcau xinej."
+      </div>
+      <iframe class="iframe" id="iframe">
+        <p>您的浏览器不支持 iframe 标签。</p>
+      </iframe>
+    </div>
+    <script>
+      window.onload = function runoob() {
+        const iframeWindow = document.getElementById("iframe").contentWindow;
+        iframeWindow.addEventListener("resize", () => {
+          console.log("resizez", iframeWindow.window.innerHeight);
+        });
+      };
+    </script>
+  </body>
+</html>
