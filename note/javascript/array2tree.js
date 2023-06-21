@@ -1,9 +1,9 @@
 const nodes = [
-  { id: "root0", name: "root0", parentId: null },
-  { id: "root1", name: "root1", parentId: null },
-  { id: "p1", name: "p1", parentId: "root0" },
-  { id: "p1", name: "p1", parentId: "root1" },
-  { id: "c0", name: "c0", parentId: "p1" },
+  { id: "root0", name: "root0", pid: null },
+  { id: "root1", name: "root1", pid: null },
+  { id: "p1", name: "p1", pid: "root0" },
+  { id: "p1", name: "p1", pid: "root1" },
+  { id: "c0", name: "c0", pid: "p1" },
 ];
 
 function convert(data) {
