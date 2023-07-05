@@ -1,0 +1,1 @@
+const e=JSON.parse('{"key":"v-744a811d","path":"/npm/","title":"","lang":"en-US","frontmatter":{},"headers":[{"level":3,"title":"npm link","slug":"npm-link","link":"#npm-link","children":[]}],"git":{"updatedTime":1688540893000,"contributors":[{"name":"yangkun","email":"yangkun@pharmcube.com","commits":1}]},"filePathRelative":"npm/index.md"}');export{e as data};
