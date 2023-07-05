@@ -1,183 +1,125 @@
-const list = [
-  {
-    id: "0",
-    name: "xiaohong",
-    gender: "female",
-    bu: "go",
-    department: "fe",
-  },
+const tree = [
   {
     id: "1",
-    name: "xiaoming",
-    gender: "female",
-    bu: "pat",
-    department: "fe",
+    title: "节点1",
+    children: [
+      {
+        id: "1-1",
+        title: "节点1-1",
+      },
+      {
+        id: "1-2",
+        title: "节点1-2",
+      },
+    ],
   },
   {
     id: "2",
-    name: "xiaowang",
-    gender: "male",
-    bu: "go",
-    department: "be",
-  },
-  {
-    id: "3",
-    name: "xiaozhang",
-    gender: "male",
-    bu: "pat",
-    department: "be",
+    title: "节点2",
+    children: [
+      {
+        id: "2-1",
+        title: "节点2-1",
+        children: [
+          {
+            id: "2-1-1",
+            title: "节点2-1-1",
+          },
+        ],
+      },
+    ],
   },
 ];
 
-const mapId = {};
+const list = [
+  {
+    id: "1",
+    title: "节点1",
+    parentId: "",
+  },
+  {
+    id: "1-1",
+    title: "节点1-1",
+    parentId: "1",
+  },
+  {
+    id: "1-2",
+    title: "节点1-2",
+    parentId: "1",
+  },
+  {
+    id: "2",
+    title: "节点2",
+    parentId: "",
+  },
+  {
+    id: "2-1",
+    title: "节点2-1",
+    parentId: "2",
+  },
+];
 
-list.forEach((item) => {
-  mapId[item.id] = item;
-});
-
-const groupFields = ["gender", "bu", "department"];
-const root = {
-  field: "root",
-  level: -1,
-};
-
-function genChildren(list, field) {
-  if (!list?.length) {
-    return [];
+// BFS
+function traversal_bfs(tree, cb) {
+  let node;
+  const list = [...tree];
+  while ((node = list.shift())) {
+    cb(node);
+    node.children && list.push(...node.children);
   }
-  const level = groupFields.indexOf(field);
-  const result = list.reduce((acc, cur) => {
-    if (acc[cur[field]]) {
-      acc[cur[field]].push(cur);
-    } else {
-      acc[cur[field]] = [cur];
-    }
-    return acc;
+}
+// traversal_bfs(tree, (node) => {
+//   console.log(node.title);
+// });
+
+// DFS
+function traversal_dfs(tree, cb) {
+  tree.forEach((item) => {
+    cb(item); // 先序遍历
+    item.children && traversal_dfs(item.children, cb);
+    // cb(item); // 后序遍历
+  });
+}
+// traversal_dfs(tree, (node) => {
+//   console.log(node.title);
+// });
+
+// list => tree
+function listToTree(list) {
+  const nodeMap = list.reduce((map, node) => {
+    map[node.id] = node;
+    node.children = [];
+    return map;
   }, {});
-  return Object.keys(result).map((item) => {
-    return {
-      field: item,
-      level,
-      children: result[item],
-    };
+  return list.filter((node) => {
+    nodeMap[node.parentId] && nodeMap[node.parentId].children.push(node);
+    return !node.parentId;
   });
 }
 
-groupFields.forEach((field, level) => {
-  if (level === 0) {
-    if (list?.length) {
-      root.children = genChildren(list, field);
-    }
-  }
-  if (level === 1) {
-    root.children?.forEach((item) => {
-      if (item.children?.length) {
-        item.children = genChildren(item.children, field);
-      }
-    });
-  }
-  if (level === 2) {
-    root.children?.forEach((item) => {
-      item.children?.forEach((citem) => {
-        if (citem.children?.length) {
-          citem.children = genChildren(citem.children, field);
-        }
-      });
-    });
-  }
-});
-const x = {
-  field: "root",
-  level: -1,
-  children: [
-    {
-      field: "female",
-      level: 0,
-      children: [
-        {
-          field: "go",
-          level: 1,
-          children: [
-            {
-              field: "fe",
-              level: 2,
-              children: [
-                {
-                  id: "0",
-                  name: "xiaohong",
-                  gender: "female",
-                  bu: "go",
-                  department: "fe",
-                },
-              ],
-            },
-          ],
-        },
-        {
-          field: "pat",
-          level: 1,
-          children: [
-            {
-              field: "fe",
-              level: 2,
-              children: [
-                {
-                  id: "1",
-                  name: "xiaoming",
-                  gender: "female",
-                  bu: "pat",
-                  department: "fe",
-                },
-              ],
-            },
-          ],
-        },
-      ],
-    },
-    {
-      field: "male",
-      level: 0,
-      children: [
-        {
-          field: "go",
-          level: 1,
-          children: [
-            {
-              field: "be",
-              level: 2,
-              children: [
-                {
-                  id: "2",
-                  name: "xiaowang",
-                  gender: "male",
-                  bu: "go",
-                  department: "be",
-                },
-              ],
-            },
-          ],
-        },
-        {
-          field: "pat",
-          level: 1,
-          children: [
-            {
-              field: "be",
-              level: 2,
-              children: [
-                {
-                  id: "3",
-                  name: "xiaozhang",
-                  gender: "male",
-                  bu: "pat",
-                  department: "be",
-                },
-              ],
-            },
-          ],
-        },
-      ],
-    },
-  ],
-};
-console.log(JSON.stringify(root));
+// tree => list
+const result = [];
+function treeToList(tree, result = [], level = 1) {
+  tree.forEach((node) => {
+    result.push(node);
+    node.level = level++;
+    node.children && treeToList(node.children, result, level);
+  });
+  return result;
+}
+treeToList(tree, result, 1) 
+
+// function treeToList(tree) {
+//   const result = tree.map((node) => {
+//     node.level = 1;
+//     return node;
+//   });
+//   for (let i = 0; i < result.length; i++) {
+//     if (!result[i].children) continue;
+//     const list = result[i].children.map(
+//       (node) => ((node.level = result[i].level + 1), node)
+//     );
+//     result.splice(i + 1, 0, ...list);
+//   }
+//   return result;
+// }
