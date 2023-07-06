@@ -98,28 +98,18 @@ function listToTree(list) {
 }
 
 // tree => list
-const result = [];
-function treeToList(tree, result = [], level = 1) {
-  tree.forEach((node) => {
-    result.push(node);
-    node.level = level++;
-    node.children && treeToList(node.children, result, level);
+function treeToList(tree) {
+  const result = tree.map((node) => {
+    node.level = 1;
+    return node;
   });
+  for (let i = 0; i < result.length; i++) {
+    if (!result[i].children) continue;
+    const list = result[i].children.map(
+      (node) => ((node.level = result[i].level + 1), node)
+    );
+    result.splice(i + 1, 0, ...list);
+  }
   return result;
 }
-treeToList(tree, result, 1) 
-
-// function treeToList(tree) {
-//   const result = tree.map((node) => {
-//     node.level = 1;
-//     return node;
-//   });
-//   for (let i = 0; i < result.length; i++) {
-//     if (!result[i].children) continue;
-//     const list = result[i].children.map(
-//       (node) => ((node.level = result[i].level + 1), node)
-//     );
-//     result.splice(i + 1, 0, ...list);
-//   }
-//   return result;
-// }
+console.log(treeToList(tree));

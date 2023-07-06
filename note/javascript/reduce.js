@@ -1,4 +1,4 @@
-const arr = [["a", "b"], ["x", "y"], ["A"]];
+const arr = [["a", "b"], ["x", "y"], ["1"]];
 
 // 两两组合
 /**
@@ -30,27 +30,26 @@ console.log(permutate(arr));
  * 回溯
  */
 function permutate2(arr) {
-  if (!arr || !Array.isArray(arr)) {
+  if (!arr?.length) {
     return [];
   }
   const result = [];
   /**
-   * arr 二维数组 Array
-   * index 当前所在步骤
+   * index 当前所在步骤,层级等于arr的长度说明结束，假定arr都是有值的
    * currentList 当前累积维度的数组
    */
-  const backtrack = (arr, index, currentList) => {
-    if (index >= arr.length) {
+  const backtrack = (index, currentList) => {
+    if (index === arr.length) {
       result.push([...currentList]);
     } else {
       arr[index].forEach((item) => {
         currentList.push(item);
-        backtrack(arr, index + 1, currentList);
+        backtrack(index + 1, currentList);
         currentList.pop();
       });
     }
   };
-  backtrack(arr, 0, []);
+  backtrack(0, []);
   return result;
 }
 console.log(permutate2(arr));
