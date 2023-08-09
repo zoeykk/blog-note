@@ -2,7 +2,6 @@ const arr = [["a", "b"], ["x", "y"], ["A"]];
 
 // 两两组合
 /**
- *
  * reduce
  */
 function permutate(arr) {
@@ -25,7 +24,7 @@ function permutate(arr) {
     return result;
   }, []);
 }
-// console.log(permutate(arr));
+console.log(permutate(arr));
 
 /**
  * 回溯
@@ -40,20 +39,18 @@ function permutate2(arr) {
    * index 当前所在步骤
    * currentList 当前累积维度的数组
    */
-  const _back = (arr, index, currentList) => {
+  const backtrack = (arr, index, currentList) => {
     if (index >= arr.length) {
       result.push([...currentList]);
     } else {
       arr[index].forEach((item) => {
-        // console.log("push", item);
         currentList.push(item);
-        _back(arr, index + 1, currentList);
+        backtrack(arr, index + 1, currentList);
         currentList.pop();
-        // console.log("pop", item);
       });
     }
   };
-  _back(arr, 0, []);
+  backtrack(arr, 0, []);
   return result;
 }
 console.log(permutate2(arr));
