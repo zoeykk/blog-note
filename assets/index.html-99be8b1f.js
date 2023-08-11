@@ -1,1 +1,0 @@
-const n=JSON.parse('{"key":"v-744a811d","path":"/npm/","title":"","lang":"en-US","frontmatter":{},"headers":[{"level":3,"title":"npm link","slug":"npm-link","link":"#npm-link","children":[]}],"git":{"updatedTime":1691590882000,"contributors":[{"name":"yangkun","email":"kun12_yang.com","commits":1}]},"filePathRelative":"npm/index.md"}');export{n as data};
