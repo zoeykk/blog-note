@@ -7,7 +7,7 @@ function isSpace(char) {
   return /\s/.test(char);
 }
 
-function isOperator(char) {
+function isSeparator(char) {
   return [TOKEN.LP, TOKEN.RP, TOKEN.LSB, TOKEN.RSB, TOKEN.COLON].includes(char);
 }
 
@@ -19,13 +19,12 @@ function isField(char) {
   return FIELDS.includes(char);
 }
 
-function isDoubleQuotation(char) {
+function isDq(char) {
   return char === TOKEN.DQ;
 }
 
 let index = 0;
 function emitToken(token) {
-  currentToken = { type: "", value: "" };
   if (isLogic(token.value)) {
     token.type = TOKEN_TYPE.LOGIC;
   } else if (isField(token.value)) {
@@ -54,89 +53,97 @@ function emitToken(token) {
       token.errMsg = '缺少符号"';
     }
   }
-  tokens.push({ ...token, index });
-  index++;
+  if (token.type) {
+    currentToken = { type: "", value: "" };
+    tokens.push({ ...token, index });
+    index++;
+  }
 }
 
+// init mode
 function start(char) {
-  if (isOperator(char)) {
+  if (isSeparator(char)) {
     currentToken = { type: TOKEN_TYPE.OPT, value: char };
-    return operator;
+    return separatorFun;
   } else if (isSpace(char)) {
     currentToken = { type: TOKEN_TYPE.SPACE, value: char };
-    return space;
-  } else if (isDoubleQuotation(char)) {
+    return spaceFun;
+  } else if (isDq(char)) {
     currentToken = { type: TOKEN_TYPE.STRWORD, value: char };
-    return strwordFun;
+    return dQFun;
   }
   currentToken = { type: TOKEN_TYPE.WORD, value: char };
-  return wordchar;
+  return wordFun;
 }
 
-function space(char) {
+// space mode
+function spaceFun(char) {
   if (isSpace(char)) {
     currentToken.value += char;
-    return space;
-  } else if (isOperator(char)) {
+    return spaceFun;
+  } else if (isSeparator(char)) {
     emitToken(currentToken);
     currentToken = { type: TOKEN_TYPE.OPT, value: char };
-    return operator;
-  } else if (isDoubleQuotation(char)) {
+    return separatorFun;
+  } else if (isDq(char)) {
     emitToken(currentToken);
     currentToken = { type: TOKEN_TYPE.STRWORD, value: char };
-    return strwordFun;
+    return dQFun;
   }
   emitToken(currentToken);
   currentToken = { type: TOKEN_TYPE.WORD, value: char };
-  return wordchar;
+  return wordFun;
 }
 
-function operator(char) {
+// separator mode
+function separatorFun(char) {
   emitToken(currentToken);
-  if (isOperator(char)) {
+  if (isSeparator(char)) {
     currentToken = { type: TOKEN_TYPE.OPT, value: char };
-    return operator;
+    return separatorFun;
   } else if (isSpace(char)) {
     currentToken = { type: TOKEN_TYPE.SPACE, value: char };
-    return space;
-  } else if (isDoubleQuotation(char)) {
-    emitToken(currentToken);
+    return spaceFun;
+  } else if (isDq(char)) {
     currentToken = { type: TOKEN_TYPE.STRWORD, value: char };
-    return strwordFun;
+    return dQFun;
   }
   currentToken = { type: TOKEN_TYPE.WORD, value: char };
-  return wordchar;
+  return wordFun;
 }
 
-function wordchar(char) {
-  if (isOperator(char)) {
+// word mode
+function wordFun(char) {
+  if (isSeparator(char)) {
     emitToken(currentToken);
     currentToken = { type: TOKEN_TYPE.SPACE, value: char };
-    return operator;
+    return separatorFun;
   } else if (isSpace(char)) {
     emitToken(currentToken);
     currentToken = { type: TOKEN_TYPE.SPACE, value: char };
-    return space;
+    return spaceFun;
   }
   currentToken.value += char;
-  return wordchar;
+  return wordFun;
 }
 
-function strwordFun(char) {
+// double quotation mode
+function dQFun(char) {
   currentToken.value += char;
-  if (isDoubleQuotation(char)) {
+  if (isDq(char)) {
     emitToken(currentToken);
     return start;
   }
-  return strwordFun;
+  return dQFun;
 }
 
-exports.tokenizer = function (input) {
+function tokenizer(input) {
   let state = start;
   input.split("").forEach((char) => {
     state = state(char);
   });
-  // 遍历结束后仍然需要发送一次最后
   emitToken(currentToken);
   return tokens;
-};
+}
+
+module.exports = { tokenizer };
