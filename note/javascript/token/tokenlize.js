@@ -25,6 +25,7 @@ function isDq(char) {
 
 let index = 0;
 function emitToken(token) {
+  currentToken = { type: "", value: "" };
   if (isLogic(token.value)) {
     token.type = TOKEN_TYPE.LOGIC;
   } else if (isField(token.value)) {
@@ -53,11 +54,8 @@ function emitToken(token) {
       token.errMsg = '缺少符号"';
     }
   }
-  if (token.type) {
-    currentToken = { type: "", value: "" };
-    tokens.push({ ...token, index });
-    index++;
-  }
+  tokens.push({ ...token, index });
+  index++;
 }
 
 // init mode
@@ -122,6 +120,10 @@ function wordFun(char) {
     emitToken(currentToken);
     currentToken = { type: TOKEN_TYPE.SPACE, value: char };
     return spaceFun;
+  } else if (isDq(char)) {
+    emitToken(currentToken);
+    currentToken = { type: TOKEN_TYPE.STRWORD, value: char };
+    return dQFun;
   }
   currentToken.value += char;
   return wordFun;
@@ -142,7 +144,9 @@ function tokenizer(input) {
   input.split("").forEach((char) => {
     state = state(char);
   });
-  emitToken(currentToken);
+  if (currentToken.type) {
+    emitToken(currentToken);
+  }
   return tokens;
 }
 
