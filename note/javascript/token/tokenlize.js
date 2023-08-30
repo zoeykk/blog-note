@@ -23,6 +23,29 @@ function isDq(char) {
   return char === TOKEN.DQ;
 }
 
+// check keyword
+function checkWord(token) {}
+
+// check string keyword
+function checkStrWord(token) {
+  const tokenValueLen = token.value.length;
+  if (tokenValueLen < 2) {
+    token.err = true;
+    token.errMsg = '缺少符号"';
+  } else {
+    if (token.value[tokenValueLen - 1] == TOKEN.DQ) {
+      const content = token.value.slice(1, tokenValueLen - 1);
+      if (!content.trim()) {
+        token.err = true;
+        token.errMsg = "引号内容为空";
+      }
+    } else {
+      token.err = true;
+      token.errMsg = '缺少符号"';
+    }
+  }
+}
+
 let index = 0;
 function emitToken(token) {
   currentToken = { type: "", value: "" };
@@ -40,19 +63,12 @@ function emitToken(token) {
     token.type = TOKEN_TYPE.RSB;
   } else if (token.value == TOKEN.COLON) {
     token.type = TOKEN_TYPE.COLON;
-  } else if (token.value[0] == TOKEN.DQ) {
-    const tokenValueLen = token.value.length;
-    if (token.value[tokenValueLen - 1] == TOKEN.DQ) {
-      if (tokenValueLen == 2) {
-        token.err = true;
-        token.errMsg = "缺少值";
-      } else {
-        token.type = TOKEN_TYPE.STRWORD;
-      }
-    } else {
-      token.err = true;
-      token.errMsg = '缺少符号"';
-    }
+  } else if (token.type == TOKEN_TYPE.WORD) {
+    token.type = TOKEN_TYPE.KEYWORD;
+    checkWord(token);
+  } else if (token.type == TOKEN_TYPE.STRWORD) {
+    token.type = TOKEN_TYPE.KEYWORD;
+    checkStrWord(token);
   }
   tokens.push({ ...token, index });
   index++;
@@ -61,7 +77,7 @@ function emitToken(token) {
 // init mode
 function start(char) {
   if (isSeparator(char)) {
-    currentToken = { type: TOKEN_TYPE.OPT, value: char };
+    currentToken = { type: TOKEN_TYPE.SEPARATOR, value: char };
     return separatorFun;
   } else if (isSpace(char)) {
     currentToken = { type: TOKEN_TYPE.SPACE, value: char };
@@ -81,7 +97,7 @@ function spaceFun(char) {
     return spaceFun;
   } else if (isSeparator(char)) {
     emitToken(currentToken);
-    currentToken = { type: TOKEN_TYPE.OPT, value: char };
+    currentToken = { type: TOKEN_TYPE.SEPARATOR, value: char };
     return separatorFun;
   } else if (isDq(char)) {
     emitToken(currentToken);
@@ -97,7 +113,7 @@ function spaceFun(char) {
 function separatorFun(char) {
   emitToken(currentToken);
   if (isSeparator(char)) {
-    currentToken = { type: TOKEN_TYPE.OPT, value: char };
+    currentToken = { type: TOKEN_TYPE.SEPARATOR, value: char };
     return separatorFun;
   } else if (isSpace(char)) {
     currentToken = { type: TOKEN_TYPE.SPACE, value: char };
@@ -144,7 +160,7 @@ function tokenizer(input) {
   input.split("").forEach((char) => {
     state = state(char);
   });
-  if (currentToken.type) {
+  if (currentToken.value) {
     emitToken(currentToken);
   }
   return tokens;

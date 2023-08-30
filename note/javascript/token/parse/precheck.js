@@ -1,33 +1,28 @@
 const { TOKEN_TYPE } = require("../token");
-const { parsePubd } = require("./parsePubd");
 
-// 括号的有效性，缺少一侧括号或者多了一侧括号
-// 不能以逻辑词开头或者结尾，不能出现连续的逻辑词
-exports.parse = function (tokens) {
+/**
+ * 预校验
+ * 1.只能以 空格 keyword 字段名 小括号开头
+ * 2.括号的有效性，缺少一侧括号或者多了一侧括号
+ * @param {*} tokens
+ * @returns
+ */
+exports.precheck = function (tokens) {
   const pStack = [],
-    bStack = [];
-  let preLogicIndex = -1;
+    bStack = [],
+    firstTypes = [
+      TOKEN_TYPE.FIELD,
+      TOKEN_TYPE.SPACE,
+      TOKEN_TYPE.KEYWORD,
+      TOKEN_TYPE.LP,
+    ];
+  const firstToken = tokens[0];
+  if (!firstTypes.includes(firstToken.type)) {
+    firstToken.err = true;
+    firstToken.errMsg = "该类型不能出现在开头";
+  }
   for (let i = 0; i < tokens.length; i++) {
     const token = tokens[i];
-    // // logic
-    // if (token.type == TOKEN_TYPE.LOGIC) {
-    //   if (i == 0) {
-    //     tokens[i].err = true;
-    //     tokens[i].errMsg = "不能以逻辑词开头或者结尾";
-    //   } else {
-    //     if (i - preLogicIndex == 2 && tokens[i - 1].type == TOKEN_TYPE.SPACE) {
-    //       tokens[preLogicIndex].err = true;
-    //       tokens[preLogicIndex].errMsg = "不能出现连续的逻辑词";
-    //       tokens[i].err = true;
-    //       tokens[i].errMsg = "不能出现连续的逻辑词";
-    //     }
-    //     if (i == tokens.length - 1) {
-    //       tokens[i].err = true;
-    //       tokens[i].errMsg = "不能以逻辑词开头或者结尾";
-    //     }
-    //   }
-    //   preLogicIndex = i;
-    // }
     // parenthesis
     if (token.type == TOKEN_TYPE.LP) {
       pStack.push(token);
@@ -54,10 +49,6 @@ exports.parse = function (tokens) {
         tokens[i].err = true;
         tokens[i].errMsg = "缺少左侧[括号";
       }
-    }
-    // pubd
-    if (token.value == "PUB_D") {
-      parsePubd(i, tokens);
     }
   }
   if (pStack.length) {

@@ -12,16 +12,17 @@ const TOKEN_TYPE = {
   WORD: "WORD",
   STRWORD: "STRWORD",
 
-  FIELD: "FIELD",
-  COLON: "COLON",
-
   LOGIC: "LOGIC",
 
+  FIELD: "FIELD",
+
+  SEPARATOR: "SEPARATOR", // SEPARATOR: [COLON,LP,RP,LSB,RSB]
+  COLON: "COLON",
   LP: "LP",
   RP: "RP",
   LSB: "LSB",
   RSB: "RSB",
-  
+
   SPACE: "SPACE",
 };
 
