@@ -1,4 +1,4 @@
-const { FIELDS, LOGICS, TOKEN, TOKEN_TYPE } = require("./token");
+const { FIELDS, LOGICS, TOKEN, TOKEN_TYPE } = require("../token");
 
 const tokens = [];
 let currentToken = { type: "", value: "" };
@@ -155,7 +155,7 @@ function dQFun(char) {
   return dQFun;
 }
 
-function tokenizer(input) {
+function scan(input) {
   let state = start;
   input.split("").forEach((char) => {
     state = state(char);
@@ -166,4 +166,4 @@ function tokenizer(input) {
   return tokens;
 }
 
-module.exports = { tokenizer };
+module.exports = scan
