@@ -12,14 +12,16 @@ exports.precheck = function (tokens) {
     bStack = [],
     firstTypes = [
       TOKEN_TYPE.FIELD,
+      TOKEN_TYPE.FIELD_DATE,
       TOKEN_TYPE.SPACE,
-      TOKEN_TYPE.KEYWORD,
+      TOKEN_TYPE.WORD,
+      TOKEN_TYPE.STRWORD,
+      TOKEN_TYPE.DATEWORD,
       TOKEN_TYPE.LP,
     ];
-  const firstToken = tokens[0];
-  if (!firstTypes.includes(firstToken.type)) {
-    firstToken.err = true;
-    firstToken.errMsg = "该类型不能出现在开头";
+  if (!firstTypes.includes(tokens[0].type)) {
+    tokens[0].err = true;
+    tokens[0].errMsg = "该类型不能出现在开头";
   }
   for (let i = 0; i < tokens.length; i++) {
     const token = tokens[i];

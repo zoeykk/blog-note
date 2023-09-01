@@ -1,4 +1,4 @@
-const { FIELDS, LOGICS, TOKEN, TOKEN_TYPE } = require("../token");
+const { FIELDS, DATE_FIELDS, LOGICS, TOKEN, TOKEN_TYPE } = require("../token");
 
 const tokens = [];
 let currentToken = { type: "", value: "" };
@@ -11,16 +11,28 @@ function isSeparator(char) {
   return [TOKEN.LP, TOKEN.RP, TOKEN.LSB, TOKEN.RSB, TOKEN.COLON].includes(char);
 }
 
-function isLogic(char) {
-  return LOGICS.includes(char);
+function isLogic(str) {
+  return LOGICS.includes(str);
 }
 
-function isField(char) {
-  return FIELDS.includes(char);
+function isTo(str) {
+  return ["TO", "to", "To"].includes(str);
+}
+
+function isField(str) {
+  return FIELDS.includes(str);
+}
+
+function isDateField(str) {
+  return DATE_FIELDS.includes(str);
 }
 
 function isDq(char) {
   return char === TOKEN.DQ;
+}
+
+function isDateWord(str) {
+  return str.length === 10 && /\d{4}-\d{2}-\d{2}/.test(str);
 }
 
 // check keyword
@@ -53,6 +65,10 @@ function emitToken(token) {
     token.type = TOKEN_TYPE.LOGIC;
   } else if (isField(token.value)) {
     token.type = TOKEN_TYPE.FIELD;
+  } else if (isDateField(token.value)) {
+    token.type = TOKEN_TYPE.FIELD_DATE;
+  } else if (isTo(token.value)) {
+    token.type = TOKEN_TYPE.TO;
   } else if (token.value == TOKEN.LP) {
     token.type = TOKEN_TYPE.LP;
   } else if (token.value == TOKEN.RP) {
@@ -64,10 +80,13 @@ function emitToken(token) {
   } else if (token.value == TOKEN.COLON) {
     token.type = TOKEN_TYPE.COLON;
   } else if (token.type == TOKEN_TYPE.WORD) {
-    token.type = TOKEN_TYPE.KEYWORD;
+    if (token.value === "*") {
+      token.type = TOKEN_TYPE.WILDCARD;
+    } else if (isDateWord(token.value)) {
+      token.type = TOKEN_TYPE.DATEWORD;
+    }
     checkWord(token);
   } else if (token.type == TOKEN_TYPE.STRWORD) {
-    token.type = TOKEN_TYPE.KEYWORD;
     checkStrWord(token);
   }
   tokens.push({ ...token, index });
@@ -166,4 +185,4 @@ function scan(input) {
   return tokens;
 }
 
-module.exports = scan
+module.exports = scan;

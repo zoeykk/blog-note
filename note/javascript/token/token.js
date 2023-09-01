@@ -8,13 +8,14 @@ const TOKEN = {
 };
 
 const TOKEN_TYPE = {
-  KEYWORD: "KEYWORD", // KEYWORD = WORD OR STRWORD
   WORD: "WORD",
   STRWORD: "STRWORD",
+  DATEWORD: "DATEWORD",
 
   LOGIC: "LOGIC",
 
   FIELD: "FIELD",
+  FIELD_DATE: "FIELD_DATE",
 
   SEPARATOR: "SEPARATOR", // SEPARATOR: [COLON,LP,RP,LSB,RSB]
   COLON: "COLON",
@@ -23,11 +24,30 @@ const TOKEN_TYPE = {
   LSB: "LSB",
   RSB: "RSB",
 
+  WILDCARD: "WILDCARD",
+
+  TO: "TO",
+
   SPACE: "SPACE",
 };
 
-const FIELDS = ["TACD", "PUB_D"];
+const FIELDS = [
+  "TACD",
+  "TAC",
+  "T",
+  "A",
+  "C",
+  "D",
+  "PAT_NUM",
+  "Assignee",
+  "Inventor",
+  "Authority",
+  "IPC",
+  "CPC",
+];
 
-const LOGICS = ["NOT", "AND", "OR", "TO"];
+const DATE_FIELDS = ["APP_D", "PUB_D", "PRI_D"];
 
-module.exports = { TOKEN, TOKEN_TYPE, FIELDS, LOGICS };
+const LOGICS = ["NOT", "AND", "OR"];
+
+module.exports = { TOKEN, TOKEN_TYPE, FIELDS, DATE_FIELDS, LOGICS };
