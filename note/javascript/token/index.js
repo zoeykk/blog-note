@@ -5,7 +5,7 @@ const parse = require("./parse");
 // const srcStr = '() TACD:("恒(瑞" AND 天天) AND PUB_D : [2020-01-01 TO 2022-02-02]';
 // const srcStr = 'PUB_D:[20200101 TO 20220202]"';
 // const srcStr = 'HEADS"123"**:**"  "';
-const srcStr = '() and TACD:("ASDFA") and xx PUB_D : [2020-01-01 TO 2022-02-020]';
+const srcStr = 'TACD:("ASDFA") and xx APP_D : [2020-01-01 TO 2022-02-02]';
 
 function transform(str) {
   const tokens = scan(str);
