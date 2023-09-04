@@ -6,7 +6,6 @@ function isDigit(char) {
 
 function sum(stack) {
   let res = 0;
-  console.log(stack);
   while (stack.length) {
     res += stack.pop();
   }

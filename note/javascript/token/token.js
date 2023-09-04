@@ -8,6 +8,8 @@ const TOKEN = {
 };
 
 const TOKEN_TYPE = {
+  SPACE: "SPACE",
+
   WORD: "WORD",
   STRWORD: "STRWORD",
   DATEWORD: "DATEWORD",
@@ -17,8 +19,10 @@ const TOKEN_TYPE = {
   FIELD: "FIELD",
   FIELD_DATE: "FIELD_DATE",
 
-  SEPARATOR: "SEPARATOR", // SEPARATOR: [COLON,LP,RP,LSB,RSB]
   COLON: "COLON",
+  TO: "TO",
+
+  SEPARATOR: "SEPARATOR", // SEPARATOR: [COLON,LP,RP,LSB,RSB]
   LP: "LP",
   RP: "RP",
   LSB: "LSB",
@@ -26,9 +30,7 @@ const TOKEN_TYPE = {
 
   WILDCARD: "WILDCARD",
 
-  TO: "TO",
-
-  SPACE: "SPACE",
+  OTHER: "OTHER",
 };
 
 const FIELDS = [

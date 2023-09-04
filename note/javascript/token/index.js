@@ -11,10 +11,10 @@ const { TOKEN_TYPE } = require("./token");
 // const srcStr = "PUB_D : [2020-01-01 TO 2022-02-02]";
 // const srcStr = 'TACD:("恒(瑞" AND 天天)';
 // const srcStr = "(恒瑞 (江苏 AND NANJING)())";
-const srcStr = "TACD:";
+const srcStr = "PUB_D:";
 
 function transform(str) {
-  const tokens = scan(str);
+  const tokens = scan(str).filter((item) => item.type !== TOKEN_TYPE.SPACE);
   // let isTokenErr = tokens.some((item) => item.err);
   // if (isTokenErr) {
   //   return tokens;d
@@ -49,4 +49,5 @@ function transform(str) {
   return tokens;
 }
 
-console.log(transform(srcStr));
+const resultTokens = transform(srcStr);
+console.log(resultTokens);

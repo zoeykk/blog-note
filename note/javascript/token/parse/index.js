@@ -72,7 +72,6 @@ function parse(tokens) {
   for (let i = 0; i < tokens.length; i++) {
     const token = tokens[i];
     state = transfer[state][getColNum(token)];
-    console.log(state);
     if (state < 0) {
       token.err = true;
       token.errMsg = "语法错误";

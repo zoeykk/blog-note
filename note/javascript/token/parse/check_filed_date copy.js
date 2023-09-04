@@ -3,8 +3,13 @@ const { TOKEN_TYPE } = require("../token");
 function check(tokens, index) {
   let state = 0;
   const transfer = [
-    [0, 0, 0, 0, 1, 2, 2, -1, -1, 2, -1, -1, -1, -1, -1], // 0  初始状态
-    [1, 0, 0, 0, -1, 2, 2, -1, -1, 2, -1, -1, -1, -1, -1], // 1  逻辑符号连接状态
+    [-1, -1, -1, -1, -1, -1, 1, -1, -1, -1, -1, -1, -1, -1, -1],  // 0 初始转态
+    [1, -1, -1, -1, -1, -1, -1, 2, -1, -1, -1, -1, -1, -1, -1],   // 1 field
+    [2, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 3, -1, -1, -1],   // 2 field:
+    [3, -1, -1, 4, -1, -1, -1, -1, -1, -1, -1, -1, -1, 4, -1],    // 3 field:[
+    [4, -1, -1, -1, -1, -1, -1, -1, 5, -1, -1, -1, -1, -1, -1],   // 4 field:[*
+    [5, -1, -1, 6, -1, -1, -1, -1, -1, -1, -1, -1, -1, 6, -1],    // 5 field:[* To
+    [6, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 0, -1, -1],   // 6 field:[* To *]
   ];
   const getColNum = (token) => {
     const { type } = token;
@@ -44,28 +49,22 @@ function check(tokens, index) {
   };
 
   let endIndex = 0;
-  const NEXT = [
-    TOKEN_TYPE.FIELD,
-    TOKEN_TYPE.FIELD_DATE,
-    TOKEN_TYPE.LP,
-    TOKEN_TYPE.RP,
-  ];
   for (let i = index; i < tokens.length; i++) {
     const token = tokens[i];
-    if (NEXT.includes(token.type)) {
-      endIndex = i - 1;
-      break;
+    if (state < 0) {
+      if (token.type === TOKEN_TYPE.RSB) {
+        endIndex = i;
+        break;
+      }
+      continue;
     }
     state = transfer[state][getColNum(token)];
     if (state < 0) {
       token.err = true;
       token.errMsg = "语法错误";
-      endIndex = i;
-      break;
+      continue;
     }
-    if (state === 1) {
-      token.err = true;
-      token.errMsg = "不能以逻辑词结尾";
+    if (token.type === TOKEN_TYPE.RSB) {
       endIndex = i;
       break;
     }

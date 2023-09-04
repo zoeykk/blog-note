@@ -32,10 +32,8 @@ function check(tokens, index) {
       ].includes(token.type)
     ) {
       startIndex = checkNormal(tokens, i);
-      console.log({ startIndex });
     }
   }
-  console.log(contentStack);
   return endIndex;
 }
 module.exports = check;
