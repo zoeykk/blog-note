@@ -7,8 +7,7 @@ const check = require("./check");
 // const str = "(恒瑞 (江苏 AND NANJING)())";
 // const str = "XXX AND NOT YY"; // 不能相连的逻辑词
 // const str = "ASDFA : ASDFASD";
-const str =
-  "AA NOT BB AND PUB_D:[2020-01-01 TO 2022-02-02] TACD:((BB(TTT(6666))))";
+const str = "((BB NOT : TACD:(ASDFASDF))NOT PUB_D:[2020-01-01 TO 2022-02-02]) ";
 
 function tranform(str) {
   // TOKEN
@@ -22,7 +21,8 @@ function tranform(str) {
     return tokens;
   }
   // CHECK
-  return check(tokens);
+  check(tokens);
+  return tokens;
 }
 
 const tokens = tranform(str);
