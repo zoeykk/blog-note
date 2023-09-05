@@ -22,7 +22,6 @@ const TOKEN_TYPE = {
   COLON: "COLON",
   TO: "TO",
 
-  SEPARATOR: "SEPARATOR", // SEPARATOR: [COLON,LP,RP,LSB,RSB]
   LP: "LP",
   RP: "RP",
   LSB: "LSB",

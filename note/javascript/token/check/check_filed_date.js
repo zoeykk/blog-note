@@ -39,24 +39,31 @@ transfer.set(STATE.RANGE_END, map6);
 function check(tokens, index) {
   let state = STATE.INITIAL;
   let endIndex = 0;
+  let isErr = false;
   for (let i = index; i < tokens.length; i++) {
     const token = tokens[i];
-    if (!transfer.get(state).has(token.type)) {
-      token.err = true;
-      token.errMsg = "FIELD_DATE语法错误";
-      endIndex = i;
-      break;
-    } else {
-      state = transfer.get(state).get(token.type);
-    }
     endIndex = i;
+    if (token.type === TOKEN_TYPE.SPACE) {
+      continue;
+    }
+    if (transfer.get(state).has(token.type)) {
+      state = transfer.get(state).get(token.type);
+      if (state === STATE.FINISHED) {
+        console.log("FIELD_DATE 解析成功");
+        break;
+      }
+    } else {
+      isErr = true;
+      break;
+    }
   }
-  if (state === STATE.FINISHED) {
-    console.log("解析成功了");
-  } else {
+  if (isErr) {
     tokens[index].err = true;
-    tokens[index].errMsg = "FIELD_DATE语法错误";
+    tokens[index].errMsg = `${tokens[index].value}语法错误`;
   }
-  return endIndex;
+  return {
+    isErr,
+    endIndex,
+  };
 }
 module.exports = check;

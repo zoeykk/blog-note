@@ -96,7 +96,7 @@ function emitToken(token) {
 // init mode
 function start(char) {
   if (isSeparator(char)) {
-    currentToken = { type: TOKEN_TYPE.SEPARATOR, value: char };
+    currentToken = { value: char };
     return separatorFun;
   } else if (isSpace(char)) {
     currentToken = { type: TOKEN_TYPE.SPACE, value: char };
@@ -116,7 +116,7 @@ function spaceFun(char) {
     return spaceFun;
   } else if (isSeparator(char)) {
     emitToken(currentToken);
-    currentToken = { type: TOKEN_TYPE.SEPARATOR, value: char };
+    currentToken = { value: char };
     return separatorFun;
   } else if (isDq(char)) {
     emitToken(currentToken);
@@ -132,7 +132,7 @@ function spaceFun(char) {
 function separatorFun(char) {
   emitToken(currentToken);
   if (isSeparator(char)) {
-    currentToken = { type: TOKEN_TYPE.SEPARATOR, value: char };
+    currentToken = { value: char };
     return separatorFun;
   } else if (isSpace(char)) {
     currentToken = { type: TOKEN_TYPE.SPACE, value: char };

@@ -1,53 +1,29 @@
 const scan = require("./scan");
-const { precheck } = require("./parse/precheck");
-const parse = require("./parse");
-const checkField = require("./parse/check_filed");
-const checkDateField = require("./parse/check_filed_date");
-const checkParenthesis = require("./parse/check_parenthesis");
-const checkNormal = require("./parse/check_normal");
-const check = require("./parse");
-const { TOKEN_TYPE } = require("./token");
+const precheck = require("./check/precheck");
+const check = require("./check");
 
-// const srcStr = "PUB_D : [2020-01-01 TO 2022-02-02]";
-// const srcStr = 'TACD:("恒(瑞" AND 天天)';
-// const srcStr = "(恒瑞 (江苏 AND NANJING)())";
-const srcStr = "PUB_D:";
+// const str = "PUB_D : [2020-01-01 TO 2022-02-02]";
+// const str = 'TACD:(AA((CC) ))';
+// const str = "(恒瑞 (江苏 AND NANJING)())";
+// const str = "XXX AND NOT YY"; // 不能相连的逻辑词
+// const str = "ASDFA : ASDFASD";
+const str =
+  "AA NOT BB AND PUB_D:[2020-01-01 TO 2022-02-02] TACD:((BB(TTT(6666))))";
 
-function transform(str) {
-  const tokens = scan(str).filter((item) => item.type !== TOKEN_TYPE.SPACE);
-  // let isTokenErr = tokens.some((item) => item.err);
-  // if (isTokenErr) {
-  //   return tokens;d
-  // }
-  // precheck(tokens);
-  // isTokenErr = tokens.some((item) => item.err);
-  // if (isTokenErr) {
-  //   return tokens;
-  // }
-  let startIndex = 0;
-  for (let i = 0; i < tokens.length; i++) {
-    const token = tokens[i];
-    if (i > 0 && i <= startIndex) {
-      continue;
-    } else if (token.type === TOKEN_TYPE.LP) {
-      startIndex = checkParenthesis(tokens, i);
-    } else if (token.type === TOKEN_TYPE.FIELD) {
-      startIndex = checkField(tokens, i);
-    } else if (token.type === TOKEN_TYPE.FIELD_DATE) {
-      startIndex = checkDateField(tokens, i);
-    } else if (
-      [
-        TOKEN_TYPE.WORD,
-        TOKEN_TYPE.STRWORD,
-        TOKEN_TYPE.DATEWORD,
-        TOKEN_TYPE.SPACE,
-      ].includes(token.type)
-    ) {
-      startIndex = checkNormal(tokens, i);
-    }
+function tranform(str) {
+  // TOKEN
+  const tokens = scan(str);
+  if (tokens.some((item) => item.err)) {
+    return tokens;
   }
-  return tokens;
+  // PRE CHECK
+  precheck(tokens);
+  if (tokens.some((item) => item.err)) {
+    return tokens;
+  }
+  // CHECK
+  return check(tokens);
 }
 
-const resultTokens = transform(srcStr);
-console.log(resultTokens);
+const tokens = tranform(str);
+console.log(tokens);
