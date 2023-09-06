@@ -7,26 +7,21 @@ const STATE = {
   LOGIC: "LOGIC",
 };
 
+const KEY_WORDS = [TOKEN_TYPE.WORD, TOKEN_TYPE.DATEWORD, TOKEN_TYPE.STRWORD];
+
 function reCheck(tokens) {
   function check(tokens, startIndex) {
     let state = STATE.INITIAL;
     let _endIndex = 0;
     for (let i = startIndex; i < tokens.length; i++) {
       const token = tokens[i];
+      // 消费token
       if (i > startIndex && i <= _endIndex) {
-        continue;
-      }
-      if (token.type === TOKEN_TYPE.SPACE) {
         continue;
       }
       if (token.type === TOKEN_TYPE.LP) {
         _endIndex = check(tokens, i + 1);
-      }
-      if (
-        [TOKEN_TYPE.WORD, TOKEN_TYPE.DATEWORD, TOKEN_TYPE.STRWORD].includes(
-          token.type
-        )
-      ) {
+      } else if (KEY_WORDS.includes(token.type)) {
         state = STATE.INITIAL;
       } else if (token.type === TOKEN_TYPE.LOGIC) {
         if (state === STATE.LOGIC) {
@@ -52,15 +47,23 @@ function reCheck(tokens) {
           _endIndex = dateFieldResult.endIndex;
           state = STATE.INITIAL;
         }
-      }
-      if (token.type === TOKEN_TYPE.RP) {
+      } else if (token.type === TOKEN_TYPE.RP) {
         _endIndex = i;
         if (state === STATE.LOGIC) {
           token.err = true;
           token.errMsg = "不能以逻辑词结尾";
         }
         break;
+      } else {
+        _endIndex = i;
+        token.err = true;
+        token.errMsg = "无效字符，语法错误";
+        break;
       }
+    }
+    if (state === STATE.LOGIC) {
+      tokens[tokens.length - 1].err = true;
+      tokens[tokens.length - 1].errMsg = "不能以逻辑词结尾";
     }
     return _endIndex;
   }

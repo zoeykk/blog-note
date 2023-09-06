@@ -43,9 +43,6 @@ function check(tokens, index) {
   for (let i = index; i < tokens.length; i++) {
     const token = tokens[i];
     endIndex = i;
-    if (token.type === TOKEN_TYPE.SPACE) {
-      continue;
-    }
     if (transfer.get(state).has(token.type)) {
       state = transfer.get(state).get(token.type);
       if (state === STATE.FINISHED) {

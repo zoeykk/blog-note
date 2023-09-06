@@ -46,9 +46,6 @@ function check(tokens, index) {
   for (let i = index; i < tokens.length; i++) {
     const token = tokens[i];
     endIndex = i;
-    if (token.type === TOKEN_TYPE.SPACE) {
-      continue;
-    }
     if (token.type === TOKEN_TYPE.LP) {
       pStack.push(i);
       if (pStack.length > 1) {

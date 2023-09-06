@@ -1,4 +1,5 @@
 const { TOKEN_TYPE } = require("../token");
+const { ERR_CODE } = require("../err/config");
 
 /**
  * 预校验
@@ -9,9 +10,9 @@ const { TOKEN_TYPE } = require("../token");
  * @returns
  */
 function precheck(tokens) {
-  const pStack = [],
+  const err = {},
+    pStack = [],
     pContentTokensStack = [],
-    bStack = [],
     firstTypes = [
       TOKEN_TYPE.FIELD,
       TOKEN_TYPE.FIELD_DATE,
@@ -22,8 +23,7 @@ function precheck(tokens) {
       TOKEN_TYPE.LP,
     ];
   if (!firstTypes.includes(tokens[0].type)) {
-    tokens[0].err = true;
-    tokens[0].errMsg = "该类型不能出现在开头";
+    err[tokens[0].index] = INVALID_START;
   }
   for (let i = 0; i < tokens.length; i++) {
     const token = tokens[i];
@@ -35,40 +35,16 @@ function precheck(tokens) {
         const pop = pStack.pop();
         pContentTokensStack.push(tokens.slice(pop, i + 1));
       } else {
-        tokens[i].err = true;
-        tokens[i].errMsg = "缺少左侧括号";
-      }
-    }
-    // square brackets
-    if (token.type == TOKEN_TYPE.LSB) {
-      if (bStack.length) {
-        tokens[i].err = true;
-        tokens[i].errMsg = "[不能嵌套";
-      } else {
-        bStack.push(i);
-      }
-    } else if (token.type == TOKEN_TYPE.RSB) {
-      if (bStack.length) {
-        bStack.pop();
-      } else {
-        tokens[i].err = true;
-        tokens[i].errMsg = "缺少左侧[括号";
+        err[tokens[i].index] = ERR_CODE.MISSING_LP;
       }
     }
   }
   if (pStack.length) {
     for (let i = 0; i < pStack.length; i++) {
-      tokens[pStack[i]].err = true;
-      tokens[pStack[i]].errMsg = "缺少右侧)括号";
+      err[tokens[i].index] = ERR_CODE.MISSING_RP;
     }
   }
-  if (bStack.length) {
-    for (let i = 0; i < bStack.length; i++) {
-      tokens[bStack[i]].err = true;
-      tokens[bStack[i]].errMsg = "缺少右侧]括号";
-    }
-  }
-  const pContent = pContentTokensStack.forEach((pContentTokens) => {
+  pContentTokensStack.forEach((pContentTokens) => {
     // 只包含() 或者 (空格)
     const emptyTypes = [TOKEN_TYPE.LP, TOKEN_TYPE.RP, TOKEN_TYPE.SPACE];
     const isEmpty = pContentTokens.every((item) =>
@@ -76,14 +52,11 @@ function precheck(tokens) {
     );
     if (isEmpty) {
       pContentTokens.forEach((item) => {
-        if ([TOKEN_TYPE.LP, TOKEN_TYPE.RP].includes(item.type)) {
-          tokens[item.index].err = true;
-          tokens[item.index].errMsg = "()内容不能为空";
-        }
+        err[item.index] = ERR_CODE.EMPTY_CONTENT_IN_P;
       });
     }
   });
-  return tokens;
+  return err;
 }
 
 module.exports = precheck;
