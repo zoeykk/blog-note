@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      .smart-searh-wrap {
+        width: 800px;
+        height: 400px;
+        position: relative;
+      }
+      .common-div {
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        border: 1px solid #eee;
+      }
+
+      .display-div {
+      }
+
+      .edit-div {
+        color: transparent;
+        caret-color: black;
+        z-index: 2;
+        outline: none;
+      }
+
+      #smart-search-tip {
+        display: none;
+        font-size: 14px;
+        line-height: 22px;
+        border: 1px solid #eee;
+        background-color: #eee;
+        padding: 4px;
+        position: absolute;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="smart-searh-wrap">
+      <div
+        id="editDiv"
+        class="common-div edit-div"
+        contenteditable="true"
+      ></div>
+      <div id="displayDiv" class="common-div display-div"></div>
+    </div>
+    <script>
+      window.onload = function () {
+        function showTip(e) {
+          let smartSearchTipDom = document.getElementById("smart-search-tip");
+          if (!smartSearchTipDom) {
+            smartSearchTipDom = document.createElement("div");
+          }
+          smartSearchTipDom.innerHTML =
+            "<span>" + "不能出现连续逻辑词" + "</span>";
+          smartSearchTipDom.setAttribute("id", "smart-search-tip");
+          smartSearchTipDom.style.display = "block";
+          smartSearchTipDom.style.left = e.pageX + 10 + "px";
+          smartSearchTipDom.style.top = e.pageY + 5 + "px";
+          document.body.appendChild(smartSearchTipDom);
+        }
+        function closeTip() {
+          var smartSearchTipDom = document.getElementById("smart-search-tip");
+          if (smartSearchTipDom) {
+            smartSearchTipDom.style.display = "none";
+          }
+        }
+
+        const editDom = document.getElementById("editDiv");
+        const displayDom = document.getElementById("displayDiv");
+        let boundingClientRect = [0, 0, 0, 0];
+        editDom.addEventListener("input", function (e) {
+          displayDom.innerHTML = `<span id='err-token' style="color:#f00">${e.target.innerText}</span>`;
+          const tipDom = document.getElementById("err-token");
+          const { left, top, right, bottom } = tipDom.getBoundingClientRect();
+          boundingClientRect = [left, top, right, bottom];
+        });
+        editDom.addEventListener("mousemove", function (e) {
+          const { pageX, pageY } = e;
+          const b =
+            pageX > boundingClientRect[0] &&
+            pageX < boundingClientRect[2] &&
+            pageY > boundingClientRect[1] &&
+            pageY < boundingClientRect[3];
+          if (b) {
+            showTip(e);
+          } else {
+            closeTip();
+          }
+        });
+      };
+    </script>
+  </body>
+</html>
