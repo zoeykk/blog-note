@@ -23,10 +23,10 @@ function setErr(tokens, err) {
 function tranform(str) {
   // TOKEN
   const _tokens = scan(str);
-  const tokens = _tokens.filter((item) => item.type !== TOKEN_TYPE.SPACE);
-  if (tokens.some((item) => item.err)) {
-    return tokens;
+  if (_tokens.some((item) => item.err)) {
+    return _tokens;
   }
+  const tokens = _tokens.filter((item) => item.type !== TOKEN_TYPE.SPACE);
   // PRE CHECK
   const err = precheck(tokens);
   if (Object.keys(err).length) {
