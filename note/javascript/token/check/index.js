@@ -1,6 +1,7 @@
 const checkField = require("./check_filed");
 const checkDateField = require("./check_filed_date");
 const { TOKEN_TYPE } = require("../token");
+const { ERR_CODE } = require("../err/config");
 
 const STATE = {
   INITIAL: "INITIAL",
@@ -9,7 +10,7 @@ const STATE = {
 
 const KEY_WORDS = [TOKEN_TYPE.WORD, TOKEN_TYPE.DATEWORD, TOKEN_TYPE.STRWORD];
 
-function reCheck(tokens) {
+function reCheck(tokens, err) {
   function check(tokens, startIndex) {
     let state = STATE.INITIAL;
     let _endIndex = 0;
@@ -25,8 +26,7 @@ function reCheck(tokens) {
         state = STATE.INITIAL;
       } else if (token.type === TOKEN_TYPE.LOGIC) {
         if (state === STATE.LOGIC) {
-          token.err = true;
-          token.errMsg = "不能相连的逻辑词";
+          err[token.index] = ERR_CODE.REDUNDANT_LOGIC;
           continue;
         } else {
           state = STATE.LOGIC;
@@ -50,24 +50,21 @@ function reCheck(tokens) {
       } else if (token.type === TOKEN_TYPE.RP) {
         _endIndex = i;
         if (state === STATE.LOGIC) {
-          token.err = true;
-          token.errMsg = "不能以逻辑词结尾";
+          err[token.index] = ERR_CODE.END_IN_LOGIC;
         }
         break;
       } else {
         _endIndex = i;
-        token.err = true;
-        token.errMsg = "无效字符，语法错误";
+        err[token.index] = ERR_CODE.INVALID_CHAR;
         break;
       }
     }
     if (state === STATE.LOGIC) {
-      tokens[tokens.length - 1].err = true;
-      tokens[tokens.length - 1].errMsg = "不能以逻辑词结尾";
+      err[tokens[tokens.length - 1].index] = ERR_CODE.END_IN_LOGIC;
     }
     return _endIndex;
   }
-  return check(tokens, 0);
+  check(tokens, 0);
 }
 
 module.exports = reCheck;

@@ -55,8 +55,7 @@ function check(tokens, index) {
     }
   }
   if (isErr) {
-    tokens[index].err = true;
-    tokens[index].errMsg = `${tokens[index].value}语法错误`;
+    tokens[index].err = `${tokens[index].value}语法错误`;
   }
   return {
     isErr,

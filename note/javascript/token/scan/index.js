@@ -1,7 +1,7 @@
 const { FIELDS, DATE_FIELDS, LOGICS, TOKEN, TOKEN_TYPE } = require("../token");
-const { ERR_CODE, ERR_MSG } = require("../err/config");
+const { ERR_CODE } = require("../err/config");
 
-function scan(input) {
+function scan(str, err) {
   function isSpace(char) {
     return /\s/.test(char);
   }
@@ -40,23 +40,18 @@ function scan(input) {
   function checkWord(token) {}
 
   // check string keyword
-  function checkStrWord(token) {
-    const err = {};
+  function checkStrWord(token, index) {
     const tokenValueLen = token.value.length;
     if (tokenValueLen < 2) {
-      err[token.index] = ERR_CODE.MISSING_DQ;
-      token.err = true;
-      token.errMsg = ERR_MSG.MISSING_DQ;
+      err[index] = ERR_CODE.MISSING_DQ;
     } else {
       if (token.value[tokenValueLen - 1] == TOKEN.DQ) {
         const content = token.value.slice(1, tokenValueLen - 1);
         if (!content.trim()) {
-          token.err = true;
-          token.errMsg = ERR_MSG.EMPTY_CONTENT_IN_DQ;
+          err[index] = ERR_CODE.EMPTY_CONTENT_IN_DQ;
         }
       } else {
-        token.err = true;
-        token.errMsg = ERR_MSG.MISSING_DQ;
+        err[index] = ERR_CODE.MISSING_DQ;
       }
     }
   }
@@ -171,9 +166,9 @@ function scan(input) {
       } else if (isDateWord(token.value)) {
         token.type = TOKEN_TYPE.DATEWORD;
       }
-      checkWord(token);
+      checkWord(token, index);
     } else if (token.type == TOKEN_TYPE.STRWORD) {
-      checkStrWord(token);
+      checkStrWord(token, index);
     }
     tokens.push({ ...token, index });
     index++;
@@ -181,7 +176,7 @@ function scan(input) {
 
   // state machine
   let state = start;
-  input.split("").forEach((char) => {
+  str.split("").forEach((char) => {
     state = state(char);
   });
   if (currentToken.value) {

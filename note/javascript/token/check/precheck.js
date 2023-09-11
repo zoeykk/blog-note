@@ -9,9 +9,8 @@ const { ERR_CODE } = require("../err/config");
  * @param {*} tokens
  * @returns
  */
-function precheck(tokens) {
-  const err = {},
-    pStack = [],
+function precheck(tokens, err) {
+  const pStack = [],
     pContentTokensStack = [],
     firstTypes = [
       TOKEN_TYPE.FIELD,
@@ -23,7 +22,7 @@ function precheck(tokens) {
       TOKEN_TYPE.LP,
     ];
   if (!firstTypes.includes(tokens[0].type)) {
-    err[tokens[0].index] = INVALID_START;
+    err[tokens[0].index] = ERR_CODE.INVALID_START;
   }
   for (let i = 0; i < tokens.length; i++) {
     const token = tokens[i];

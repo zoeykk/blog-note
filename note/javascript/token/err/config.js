@@ -5,6 +5,9 @@ const ERR_CODE = {
   EMPTY_CONTENT_IN_P: "EMPTY_CONTENT_IN_P",
   MISSING_DQ: "MISSING_DQ",
   EMPTY_CONTENT_IN_DQ: "EMPTY_CONTENT_IN_DQ",
+  REDUNDANT_LOGIC: "REDUNDANT_LOGIC",
+  END_IN_LOGIC: "END_IN_LOGIC",
+  INVALID_CHAR: "INVALID_CHAR",
 };
 
 const ERR_MSG = {
@@ -14,6 +17,9 @@ const ERR_MSG = {
   EMPTY_CONTENT_IN_P: "()括号内容不能为空",
   MISSING_DQ: "字符串缺少结束引号",
   EMPTY_CONTENT_IN_DQ: "字符串内容不能为空",
+  REDUNDANT_LOGIC: "不能相连的逻辑词",
+  END_IN_LOGIC: "不能以逻辑词结尾",
+  INVALID_CHAR: "无效字符，语法错误",
 };
 
 module.exports = {

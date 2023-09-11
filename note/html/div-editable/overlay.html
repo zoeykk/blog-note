@@ -36,6 +36,14 @@
         padding: 4px;
         position: absolute;
       }
+
+      .kd {
+        color: #0092bc;
+      }
+
+      .err {
+        color: #f00;
+      }
     </style>
   </head>
   <body>
@@ -47,7 +55,7 @@
       ></div>
       <div id="displayDiv" class="common-div display-div"></div>
     </div>
-    <script>
+    <script type="module">
       window.onload = function () {
         function showTip(e) {
           let smartSearchTipDom = document.getElementById("smart-search-tip");
@@ -73,7 +81,7 @@
         const displayDom = document.getElementById("displayDiv");
         let boundingClientRect = [0, 0, 0, 0];
         editDom.addEventListener("input", function (e) {
-          displayDom.innerHTML = `<span id='err-token' style="color:#f00">${e.target.innerText}</span>`;
+          displayDom.innerHTML = `<span id='err-token' class='kd'>${e.target.innerText}</span>`;
           const tipDom = document.getElementById("err-token");
           const { left, top, right, bottom } = tipDom.getBoundingClientRect();
           boundingClientRect = [left, top, right, bottom];
